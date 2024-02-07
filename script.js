@@ -2,27 +2,30 @@
 
 window.addEventListener("load", start);
 
-let guess;
+let rangeStart, rangeEnd, guess;
 
 function start() {
-  console.log("JavaSript is running");
-  guess = generateRandomGuess();
-  document.querySelector("#btn-start").addEventListener("click", giveGuess);
+  document.querySelector("#btn-start").addEventListener("click", getRange);
   document.querySelector("#buttons").addEventListener("click", checkGuess);
 }
 
-function generateRandomGuess() {
-  return Math.floor(Math.random() * 99) + 1;
+function getRange() {
+  rangeStart = document.getElementById("range-start").valueAsNumber;
+  rangeEnd = document.getElementById("range-end").valueAsNumber;
+  document.querySelector("#btn-ready").remove();
+  giveGuess();
 }
 
 function giveGuess() {
-  document.querySelector("#btn-ready").remove();
+  guess = Math.floor((rangeStart + rangeEnd) / 2);
   const list = document.querySelector("#guess-list");
   const buttonDiv = document.querySelector("#buttons");
-  const string = `<li>I'm guessing ${generateRandomGuess()}:</li>`;
-  const buttons = `<button id="btn-higher">Too Low</button><button id="btn-lower">Too High</button><button id="btn-correct">Correct!</button>`;
+  const string = `<li>I'm guessing ${guess}:</li>`;
+  if (!buttonDiv.querySelector("#btn-higher")) {
+    const buttons = `<button id="btn-higher">Too Low</button><button id="btn-lower">Too High</button><button id="btn-correct">Correct!</button>`;
+    buttonDiv.insertAdjacentHTML("afterbegin", buttons);
+  }
   list.insertAdjacentHTML("beforeend", string);
-  buttonDiv.insertAdjacentHTML("afterbegin", buttons);
 }
 
 function checkGuess(evt) {
@@ -30,24 +33,26 @@ function checkGuess(evt) {
   const target = evt.target;
 
   if (target.id.includes("btn-higher")) {
-    guessTooLow();
+    rangeStart = guess + 1;
+    updateGuess();
   } else if (target.id.includes("btn-lower")) {
-    guessTooHigh();
+    rangeEnd = guess - 1;
+    updateGuess();
   } else if (target.id.includes("btn-correct")) {
     guessIsCorrect();
   }
 }
 
-function guessTooLow() {
-  const list = document.querySelector("#guess-list");
-  const string = `<li>I'm guessing ${generateRandomGuess()}:</li>`;
-  list.insertAdjacentHTML("beforeend", string);
-}
-
-function guessTooHigh() {
-  const list = document.querySelector("#guess-list");
-  const string = `<li>I'm guessing ${generateRandomGuess()}:</li>`;
-  list.insertAdjacentHTML("beforeend", string);
+function updateGuess() {
+  if (rangeStart >= rangeEnd) {
+    const list = document.querySelector("#guess-list");
+    const string = `<li>There's only one possibility left: ${rangeStart} </li>`;
+    list.insertAdjacentHTML("beforeend", string);
+    document.querySelector("#buttons").remove();
+  } else {
+    guess = Math.floor((rangeStart + rangeEnd) / 2);
+    giveGuess();
+  }
 }
 
 function guessIsCorrect(guess) {

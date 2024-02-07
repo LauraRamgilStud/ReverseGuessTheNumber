@@ -12,14 +12,12 @@
       Welcome to Reverse Guess the number - where I try to guess the number you
       are thinking of!
     </p>
-    <p>
-      Think of a number between 1 and 100<br />
-      Here we go!
-    </p>
-    <p id="btn-ready">
-      Click here when ready <button id="btn-start">Im Ready</button>
-    </p>
-
+    <div id="btn-ready">
+      <p>Please give me the range</p>
+      <input id="range-start" type="number" placeholder="e.g. 1" />
+      <input id="range-end" type="number" placeholder="e.g. 100" />
+      <p>Click here when ready <button id="btn-start">Im Ready</button></p>
+    </div>
     <ul id="guess-list"></ul>
     <div id="buttons"></div>
 
